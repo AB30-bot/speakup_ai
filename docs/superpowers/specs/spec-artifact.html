@@ -1,0 +1,244 @@
+<title>SpeakUp AI — Design Spec</title>
+<style>
+  :root{
+    --bg:#0a0b14; --surface:#14151f; --surface-2:#191a28;
+    --border:rgba(255,255,255,0.09); --text:#f2f2f7; --text-dim:#9295ab;
+    --purple:#8b5cf6; --blue:#3b82f6;
+    --grad:linear-gradient(135deg,var(--purple),var(--blue));
+    --good:#34d399; --warn:#fbbf24;
+    --radius:14px;
+    --font-display: -apple-system, "Segoe UI Semibold", "Avenir Next", "Century Gothic", ui-sans-serif, sans-serif;
+    --font-body: -apple-system, "Segoe UI", "Inter", ui-sans-serif, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Code", "Consolas", "SFMono-Regular", monospace;
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f5fb; --surface:#ffffff; --surface-2:#f0eef9;
+    --border:rgba(24,24,48,0.10); --text:#17181f; --text-dim:#5b5d72;
+    --purple:#7c3aed; --blue:#2563eb;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f6f5fb; --surface:#ffffff; --surface-2:#f0eef9;
+      --border:rgba(24,24,48,0.10); --text:#17181f; --text-dim:#5b5d72;
+      --purple:#7c3aed; --blue:#2563eb;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body); line-height:1.65; font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--purple); color:#fff;}
+  a{color:var(--blue);}
+  .topbar{
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(14px);
+    background:color-mix(in srgb, var(--bg) 80%, transparent);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:760px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:15px;}
+  .mark{width:26px; height:26px; border-radius:8px; background:var(--grad); flex-shrink:0;}
+  .status-pill{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    padding:5px 11px; border-radius:999px; border:1px solid var(--border); color:var(--text-dim);
+    white-space:nowrap;
+  }
+  main{max-width:760px; margin:0 auto; padding:56px 24px 100px;}
+
+  .doctitle{font-family:var(--font-display); font-weight:800; font-size:38px; letter-spacing:-0.02em; text-wrap:balance; margin:0 0 10px;}
+  .subtitle{color:var(--text-dim); font-size:17px; max-width:58ch; margin:0 0 28px;}
+  .metabar{
+    display:flex; flex-wrap:wrap; gap:10px 28px; padding:18px 20px; margin-bottom:56px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  }
+  .metabar div{display:flex; flex-direction:column; gap:3px;}
+  .metabar .k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim);}
+  .metabar .v{font-size:14px; font-weight:600;}
+
+  section{margin-bottom:52px; scroll-margin-top:80px;}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:18px;}
+  .sec-num{font-family:var(--font-mono); font-size:13px; color:var(--purple); font-variant-numeric:tabular-nums; flex-shrink:0;}
+  h2{font-family:var(--font-display); font-weight:700; font-size:22px; letter-spacing:-0.01em; margin:0; text-wrap:balance;}
+  h3{font-family:var(--font-display); font-weight:700; font-size:15.5px; margin:22px 0 8px;}
+  p{margin:0 0 14px; max-width:66ch;}
+  strong{font-weight:650;}
+
+  table{width:100%; border-collapse:collapse; font-size:14px; margin:6px 0 18px;}
+  .tablewrap{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius);}
+  th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-dim); background:var(--surface);}
+  tr:last-child td{border-bottom:none;}
+  td{background:var(--surface);}
+
+  pre{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; overflow-x:auto; font-family:var(--font-mono); font-size:12.5px; line-height:1.6; color:var(--text-dim);
+    margin:6px 0 18px;
+  }
+  code{font-family:var(--font-mono); font-size:0.9em; background:var(--surface-2); padding:1px 5px; border-radius:5px;}
+  pre code{background:none; padding:0;}
+
+  ul{margin:0 0 14px; padding-left:22px;}
+  li{margin-bottom:6px; max-width:64ch;}
+  li::marker{color:var(--purple);}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px;}
+  .feature{margin-bottom:16px; padding-left:16px; border-left:2px solid var(--border);}
+  .feature b{font-family:var(--font-display); font-size:14.5px; display:block; margin-bottom:4px;}
+  .feature p{margin:0; font-size:14.5px; color:var(--text-dim);}
+
+  .swatches{display:flex; gap:10px; margin:10px 0 18px; flex-wrap:wrap;}
+  .swatch{display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);}
+  .sw-dot{width:16px; height:16px; border-radius:5px; border:1px solid var(--border);}
+
+  .future li{color:var(--text-dim);}
+
+  footer{
+    max-width:760px; margin:0 auto; padding:0 24px 60px; color:var(--text-dim); font-size:12.5px;
+    font-family:var(--font-mono); border-top:1px solid var(--border); padding-top:20px;
+  }
+
+  @media(max-width:600px){
+    .doctitle{font-size:30px;}
+    .metabar{gap:10px 20px;}
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="mark"></div>SpeakUp AI</div>
+    <div class="status-pill">Draft · Phase 1</div>
+  </div>
+</div>
+
+<main>
+  <h1 class="doctitle">Design Spec — Web MVP</h1>
+  <p class="subtitle">A live, working AI public-speaking trainer deployed on Netlify, with a clean GitHub repo — built as a portfolio piece for a university application/CV. Real and honestly scoped, not a "millions of users" build.</p>
+
+  <div class="metabar">
+    <div><span class="k">Date</span><span class="v">2026-07-11</span></div>
+    <div><span class="k">Status</span><span class="v">Draft for review</span></div>
+    <div><span class="k">Phase</span><span class="v">1 of 1 — Web MVP</span></div>
+    <div><span class="k">Deploy target</span><span class="v">Netlify + GitHub</span></div>
+  </div>
+
+  <section id="stack">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Tech Stack</h2></div>
+    <div class="tablewrap"><table>
+      <tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+      <tr><td>Frontend</td><td>React + Vite + TypeScript</td><td>Fast to build, idiomatic for a CS portfolio, zero-config Netlify deploy</td></tr>
+      <tr><td>Styling</td><td>Tailwind CSS</td><td>Matches the approved mockup's design tokens directly</td></tr>
+      <tr><td>Auth + DB</td><td>Firebase Auth (Google) + Firestore</td><td>Real accounts/persistence without a hand-built backend</td></tr>
+      <tr><td>AI</td><td>Gemini API (structured JSON output)</td><td>Persona conversation, evaluation scoring, scenario generation</td></tr>
+      <tr><td>Speech</td><td>Browser Web Speech API</td><td>Free, no extra service, built into Chrome/Edge</td></tr>
+      <tr><td>Hosting</td><td>Netlify (Git-based deploy)</td><td>Auto-deploys on push, no CLI auth needed on this machine</td></tr>
+      <tr><td>Secrets</td><td>Netlify function proxy</td><td>Gemini API key never reaches the browser</td></tr>
+    </table></div>
+    <p style="font-size:13.5px;color:var(--text-dim);">Out of scope this phase: native iOS/Android/desktop apps, payments, social features, offline mode.</p>
+  </section>
+
+  <section id="architecture">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Architecture</h2></div>
+    <p>Feature-folder structure — the React equivalent of the clean-architecture separation from the original spec, scaled to app size.</p>
+    <pre>src/
+  app/            routing, providers, top-level layout
+  features/
+    auth/         sign-in, session state
+    scenarios/    curated personas + AI-generated scenario logic
+    conversation/ live voice session UI + Gemini chat + speech I/O
+    evaluation/   scoring engine, session report
+    gamification/ XP / levels / coins / streaks / achievements
+    career/       career mode ladder, infinite level generation
+    dashboard/    stats, charts, progress
+  lib/
+    firebase.ts   Firebase init
+    gemini.ts     Gemini client (calls the Netlify function only)
+    speech.ts     Web Speech API wrappers
+  types/          shared TS types (Scenario, SessionReport, UserProfile...)
+netlify/functions/
+    gemini-proxy.ts   holds GEMINI_API_KEY server-side</pre>
+    <p style="font-size:14.5px;">State: React Context + hooks for auth/session state — no heavier state library needed at this scope.</p>
+  </section>
+
+  <section id="data">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Data Model (Firestore)</h2></div>
+    <ul>
+      <li><code>users/{uid}</code> — profile, level, xp, coins, streakCount, lastSessionAt, careerLevel, unlockedAchievements[], weakSkills[]</li>
+      <li><code>users/{uid}/sessions/{sessionId}</code> — scenario used, transcript, per-category scores, overall score, XP/coins earned, timestamp</li>
+      <li><code>scenarios</code> — the ~8 fixed curated personas, seeded once</li>
+    </ul>
+    <p>AI-generated scenarios (Career Mode level 11+, or "Generate New Scenario") are <strong>not</strong> persisted as a shared library — they're generated per-request and stored only inside that user's session record, since they're one-off by design.</p>
+  </section>
+
+  <section id="features">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Core Features</h2></div>
+
+    <div class="feature"><b>Auth</b><p>Google sign-in via Firebase Auth. First login creates <code>users/{uid}</code> with defaults (level 1, 0 XP, careerLevel 1).</p></div>
+    <div class="feature"><b>Scenario selection</b><p>Grid of curated personas plus a "Generate New Scenario" action — Gemini invents a fresh persona/mood/objective/twist as structured JSON.</p></div>
+    <div class="feature"><b>Live conversation</b><p>Web Speech API captures mic input → transcribed text sent to Gemini with persona system-prompt + history → reply spoken back via <code>speechSynthesis</code>. If the browser lacks <code>SpeechRecognition</code> (e.g. Firefox), falls back to text-input chat rather than blocking the feature.</p></div>
+    <div class="feature"><b>AI evaluation</b><p>At session end, the transcript is scored via structured output: confidence, fluency, clarity, grammar, vocabulary, persuasiveness, pace, filler words, professionalism, structure, emotional impact, naturalness — each 0–100 with a one-line "why." Overall = weighted average.</p></div>
+    <div class="feature"><b>Session report</b><p>Overall score, XP/coins earned, strengths/weaknesses, best sentence, transcript, comparison to the user's rolling average.</p></div>
+    <div class="feature"><b>Gamification</b><p>XP scaled by score + difficulty, levels from an XP curve, coins as a secondary currency (cosmetic-only, no shop in v1), streak from <code>lastSessionAt</code> date diff, achievements from simple rule checks.</p></div>
+    <div class="feature"><b>Career Mode — infinite</b><p><code>careerLevel</code> never caps. Levels 1–10 use the fixed themed progression (stranger → job interview → investor pitch → TED talk...). Level 11+: Gemini generates the next level using the level number + the user's <code>weakSkills</code> to scale difficulty — genuinely endless, no hand-authored content required.</p></div>
+    <div class="feature"><b>Dashboard</b><p>Level/XP/streak/session-count stat cards, score-over-time line chart, achievement badges row.</p></div>
+    <div class="feature"><b>AI Coach</b><p>Lightweight in v1: one Gemini-generated paragraph after each session highlighting the top recurring weakness + one suggested next scenario. Full long-term training plans are future work.</p></div>
+  </section>
+
+  <section id="gemini">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Gemini Integration</h2></div>
+    <p>All calls route through one Netlify function (<code>gemini-proxy</code>) holding <code>GEMINI_API_KEY</code> server-side. Three request modes: <code>chat</code> (persona conversation turn), <code>evaluate</code> (structured scoring), <code>generateScenario</code> (structured scenario). Structured modes use Gemini's JSON-schema-constrained output, so the frontend never parses free text.</p>
+  </section>
+
+  <section id="errors">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Error Handling</h2></div>
+    <ul>
+      <li>Mic permission denied → inline prompt to re-enable, offer text-input fallback</li>
+      <li>Gemini call fails mid-conversation → retry once, then show a reconnect state without losing the transcript so far</li>
+      <li>Firestore write fails on session save → keep the report visible client-side, retry in background, warn if it ultimately fails</li>
+    </ul>
+  </section>
+
+  <section id="visual">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Visual Design</h2></div>
+    <p>Follows the approved mockup (<code>design-mockup/index.html</code>): dark mode by default, glassmorphism cards, rounded 20px corners, animated score ring, pulsing mic button, subtle listening-wave animation.</p>
+    <div class="swatches">
+      <div class="swatch"><span class="sw-dot" style="background:#8b5cf6;"></span>#8b5cf6 purple</div>
+      <div class="swatch"><span class="sw-dot" style="background:#3b82f6;"></span>#3b82f6 blue</div>
+      <div class="swatch"><span class="sw-dot" style="background:#0a0b14;"></span>#0a0b14 ground</div>
+      <div class="swatch"><span class="sw-dot" style="background:#34d399;"></span>#34d399 good</div>
+      <div class="swatch"><span class="sw-dot" style="background:#fbbf24;"></span>#fbbf24 warn</div>
+    </div>
+    <p style="font-size:14.5px;">Type: <strong>Sora</strong> for headings, <strong>Inter</strong> for body.</p>
+  </section>
+
+  <section id="testing">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Testing</h2></div>
+    <p>Unit tests (Vitest) for the pure-logic pieces — XP/level curve, streak calculation, scoring aggregation. Manual QA for the conversation flow and speech I/O, which are hard to meaningfully unit test. No E2E suite in v1 — future work.</p>
+  </section>
+
+  <section id="deploy">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Deployment</h2></div>
+    <ul>
+      <li><code>speakup_ai</code> becomes its own git repo, pushed to GitHub via the <code>github-publish</code> skill (already authenticated)</li>
+      <li>Netlify site connected to that repo via their dashboard (not CLI) — auto-deploys on push to <code>main</code></li>
+      <li><code>GEMINI_API_KEY</code> and Firebase config set as Netlify environment variables, never committed</li>
+    </ul>
+  </section>
+
+  <section id="future" class="future">
+    <div class="sec-head"><span class="sec-num">10</span><h2>Future Work</h2></div>
+    <ul>
+      <li>Native iOS/Android app once the web version is validated</li>
+      <li>Rewards shop / cosmetic unlockables spending coins</li>
+      <li>Full long-term AI coach with personalized multi-week training plans</li>
+      <li>Public profiles / leaderboard</li>
+      <li>E2E test suite</li>
+    </ul>
+  </section>
+</main>
+
+<footer>speakup_ai/docs/superpowers/specs/2026-07-11-speakup-ai-design.md — rendered for review</footer>
