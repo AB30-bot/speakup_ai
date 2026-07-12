@@ -1,6 +1,6 @@
 import { buildGeminiPayload, type ProxyRequestBody } from './lib/promptBuilders'
 
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent'
 
 interface NetlifyEvent {
   httpMethod: string

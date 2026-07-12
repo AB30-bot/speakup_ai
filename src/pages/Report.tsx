@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { evaluateSession } from '../lib/gemini'
 import { xpForSession, coinsForSession, levelFromTotalXp } from '../lib/xp'
@@ -19,9 +19,12 @@ export function Report() {
   const [coinsEarned, setCoinsEarned] = useState(0)
   const [newAchievements, setNewAchievements] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
+  const hasStartedRef = useRef(false)
 
   useEffect(() => {
     if (!state?.scenario || !state.transcript) return
+    if (hasStartedRef.current) return
+    hasStartedRef.current = true
     const scenario = state.scenario
     const transcript = state.transcript
     ;(async () => {
