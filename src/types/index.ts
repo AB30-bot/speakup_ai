@@ -23,6 +23,8 @@ export interface EvaluationResult {
   summary: string
 }
 
+export type SceneType = 'videoCall' | 'stage' | 'phoneCall' | 'casual'
+
 export interface Scenario {
   id: string
   title: string
@@ -34,6 +36,8 @@ export interface Scenario {
   mood: string
   objective: string
   systemPrompt: string
+  sceneType: SceneType
+  stageVariant?: 'audience' | 'podiumSplit'
 }
 
 export interface TranscriptTurn {

@@ -33,6 +33,10 @@ export function Scenarios() {
     setError(null)
     try {
       const generated = await generateScenario(difficultyLevel, profile.weakSkills)
+      const validSceneTypes: Scenario['sceneType'][] = ['videoCall', 'stage', 'phoneCall', 'casual']
+      const sceneType = validSceneTypes.includes(generated.sceneType as Scenario['sceneType'])
+        ? (generated.sceneType as Scenario['sceneType'])
+        : 'casual'
       const scenario: Scenario = {
         id: `generated-${Date.now()}`,
         title: generated.title ?? 'Generated Scenario',
@@ -44,6 +48,8 @@ export function Scenarios() {
         mood: generated.mood ?? 'neutral',
         objective: generated.objective ?? "Let's begin.",
         systemPrompt: generated.systemPrompt ?? `Roleplay as ${generated.personaName ?? 'a practice partner'}. Never break character.`,
+        sceneType,
+        stageVariant: generated.stageVariant === 'podiumSplit' ? 'podiumSplit' : 'audience',
       }
       startScenario(scenario)
     } catch {

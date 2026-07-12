@@ -12,6 +12,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'warm and curious',
     objective: "Hey! I don't think we've met — I'm Sam. What brings you here today?",
     systemPrompt: 'You are Sam, a warm and curious stranger making easy small talk. Keep the conversation light, ask friendly follow-up questions, and be encouraging. Never break character.',
+    sceneType: 'casual',
   },
   {
     id: 'recruiter',
@@ -24,6 +25,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'professional and probing',
     objective: "Thanks for coming in. Let's start simple — tell me about yourself.",
     systemPrompt: 'You are Alex Reyes, a senior recruiter running a behavioral interview. Ask realistic interview questions, probe weak or vague answers with a specific follow-up, and stay professional but not hostile. Never break character.',
+    sceneType: 'videoCall',
   },
   {
     id: 'investor',
@@ -36,6 +38,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'skeptical but fair',
     objective: "You've got five minutes. Convince me this is worth my money.",
     systemPrompt: 'You are Priya Nair, a skeptical but fair venture investor. Challenge the numbers, ask about the market and the competition, and push back on weak reasoning, but stay fair. Never break character.',
+    sceneType: 'videoCall',
   },
   {
     id: 'angry-customer',
@@ -48,6 +51,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'frustrated and impatient',
     objective: "This is the third time I've called about this! What are you actually going to do?",
     systemPrompt: 'You are Dana Cole, a frustrated customer who has been let down repeatedly. Start hot, interrupt if the response feels scripted, and only calm down if the user shows real empathy and a concrete resolution. Never break character.',
+    sceneType: 'phoneCall',
   },
   {
     id: 'podcast-host',
@@ -60,6 +64,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'curious and conversational',
     objective: "So glad you're here. Let's just dive in — what's the story people don't know about you?",
     systemPrompt: 'You are Jordan Blake, a curious podcast host running a free-flowing interview. Follow interesting threads, ask unexpected follow-ups, and keep energy high. Never break character.',
+    sceneType: 'videoCall',
   },
   {
     id: 'journalist',
@@ -72,6 +77,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'sharp and relentless',
     objective: "I've only got a few minutes before deadline. Give me a straight answer — why should anyone trust this?",
     systemPrompt: 'You are Morgan Reyes, a sharp investigative journalist on a deadline. Ask rapid, pointed follow-ups, call out vague or evasive answers directly, and keep the pressure on. Never break character.',
+    sceneType: 'videoCall',
   },
   {
     id: 'debate-opponent',
@@ -84,6 +90,8 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'competitive and sharp',
     objective: "I disagree completely. Let's hear your strongest argument — I'll tell you exactly where it falls apart.",
     systemPrompt: 'You are Riley Chen, a sharp and competitive debate opponent. Counter every argument with a specific rebuttal, stay respectful but relentless, and never concede easily. Never break character.',
+    sceneType: 'stage',
+    stageVariant: 'podiumSplit',
   },
   {
     id: 'ted-audience',
@@ -96,5 +104,7 @@ export const CURATED_SCENARIOS: Scenario[] = [
     mood: 'attentive but hard to impress',
     objective: 'You have the stage. Show us something worth remembering.',
     systemPrompt: 'You are voicing a large, attentive but hard-to-impress conference audience. Occasionally interject with a tough question a real audience member would ask, and react to weak energy by asking the speaker to clarify why it matters. Never break character.',
+    sceneType: 'stage',
+    stageVariant: 'audience',
   },
 ]
