@@ -1,32 +1,45 @@
-# React + TypeScript + Vite
+# SpeakUp AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+AI-powered public speaking trainer — practice real conversations with AI personas (recruiters, investors, hostile customers, TED audiences) and get instant, honest feedback on how you actually sound.
 
-Currently, two official plugins are available:
+Built as a portfolio project: React + Vite + TypeScript, Tailwind CSS v4, the Web Speech API for voice input/output, and the Gemini API (proxied through a Netlify function so the key never reaches the browser) for persona conversation, scoring, and infinite scenario/Career Mode generation. No login — progress lives in the browser via `localStorage`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- 8 curated AI personas, plus "Generate New Scenario" for unlimited AI-generated ones
+- Live voice conversation (falls back to text input if the browser doesn't support the Web Speech API)
+- AI evaluation across 12 categories (confidence, fluency, clarity, filler words, and more) with an overall score and a written "why"
+- XP, levels, coins, streaks, and achievements
+- Infinite Career Mode — a themed 1–10 ladder, then endless AI-generated levels scaled to the user's recent weak skills
+- A lightweight AI coach that surfaces your weakest skill on the dashboard
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Local development
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev       # UI only — Gemini calls will fail (no functions server)
+# or
+netlify dev       # UI + local Netlify function, reads GEMINI_API_KEY from .env
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Testing
+
+```bash
+npm run test
+```
+
+## Deployment
+
+1. Push this repo to GitHub.
+2. In the Netlify dashboard, "Import an existing project" from that GitHub repo — Netlify auto-detects `netlify.toml`.
+3. Set the `GEMINI_API_KEY` environment variable in the Netlify site's build settings (never commit it).
+4. Every push to `main` auto-deploys.
+
+## Future work
+
+- Firebase Auth (Google sign-in) + Firestore, replacing `localStorage` with real accounts and cross-device sync
+- Native iOS/Android app once the web version is validated
+- Rewards shop / cosmetic unlockables spending coins
+- Full long-term AI coach with personalized multi-week training plans
+- Public profiles / leaderboard
+- End-to-end test suite
