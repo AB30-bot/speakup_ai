@@ -6,3 +6,4 @@ dist-ssr/
 .netlify/
 .herenow/
 *.local
+.gstack/

@@ -15,23 +15,54 @@ export function PhoneCallFrame({
   onEndSession,
 }: SceneProps) {
   return (
-    <main className="mx-auto max-w-md px-6 py-10 text-center">
-      <div
-        className={`mx-auto mb-5 flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-bad/40 to-warn/30 text-5xl shadow-2xl ${
-          isThinking ? 'animate-pulse' : ''
-        }`}
-      >
-        {scenario.icon}
-      </div>
-      <div className="font-display text-xl font-bold">{scenario.personaName}</div>
-      <div className="mb-1 text-sm text-ink-dim">{scenario.personaRole}</div>
-      <div className="mb-6 flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-wide text-bad">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-bad" /> Call in progress
+    <main className="mx-auto max-w-xl px-6 py-8">
+      <div className="grain rounded-2xl bg-room px-6 pb-7 pt-9 text-center shadow-[0_24px_60px_-24px_rgba(34,28,18,0.5)]">
+        <div className="relative mx-auto mb-5 h-28 w-28">
+          {isThinking && (
+            <>
+              <span
+                className="absolute inset-0 rounded-full border border-amber/60"
+                style={{ animation: 'ring-pulse 1.8s ease-out infinite' }}
+                aria-hidden
+              />
+              <span
+                className="absolute inset-0 rounded-full border border-amber/40"
+                style={{ animation: 'ring-pulse 1.8s ease-out 0.6s infinite' }}
+                aria-hidden
+              />
+            </>
+          )}
+          <div
+            className={`flex h-28 w-28 items-center justify-center rounded-full border bg-room-2 text-5xl transition-shadow ${
+              isThinking ? 'border-amber shadow-[0_0_32px_rgba(217,138,36,0.3)]' : 'border-room-line'
+            }`}
+          >
+            {scenario.icon}
+          </div>
+        </div>
+
+        <div className="font-display text-2xl font-semibold tracking-tight text-room-ink">{scenario.personaName}</div>
+        <div className="mt-0.5 font-mono text-[11px] uppercase tracking-[0.14em] text-room-dim">{scenario.personaRole}</div>
+
+        <div className="mt-4 flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#5fa870]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#5fa870]" />
+          {isThinking ? 'Speaking…' : 'Call in progress'}
+        </div>
+
+        <button
+          className="mx-auto mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#c03427] text-xl text-white transition-colors hover:bg-[#a02a1f]"
+          onClick={onEndSession}
+          aria-label="End call"
+          title="End call"
+        >
+          <span className="inline-block rotate-[135deg]">📞</span>
+        </button>
       </div>
 
-      <GlassCard className="text-left">
+      <GlassCard className="mt-4 p-5 text-left">
+        <p className="kicker mb-3 text-ink-faint">Call transcript</p>
         <TranscriptBubbles transcript={transcript} isThinking={isThinking} personaName={scenario.personaName} />
-        <div className="mt-4">
+        <div className="mt-4 border-t border-line pt-4">
           <ConversationControls
             speechSupported={speechSupported}
             isListening={isListening}
@@ -41,8 +72,6 @@ export function PhoneCallFrame({
           />
         </div>
       </GlassCard>
-
-      <button className="btn-ghost mt-4 text-bad" onClick={onEndSession}>📞 End Call</button>
     </main>
   )
 }

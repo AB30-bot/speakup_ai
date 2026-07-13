@@ -1,50 +1,255 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0a0b14;
-  --color-surface: #14151f;
-  --color-surface-2: #191a28;
-  --color-border: rgba(255, 255, 255, 0.09);
-  --color-ink: #f2f2f7;
-  --color-ink-dim: #9295ab;
-  --color-purple: #8b5cf6;
-  --color-purple-light: #a78bfa;
-  --color-blue: #3b82f6;
-  --color-blue-light: #60a5fa;
-  --color-good: #34d399;
-  --color-warn: #fbbf24;
-  --color-bad: #f87171;
-  --font-display: "Sora", ui-sans-serif, sans-serif;
-  --font-body: "Inter", ui-sans-serif, sans-serif;
+  /* Paper shell */
+  --color-paper: #f2ecdf;
+  --color-cream: #fdfaf1;
+  --color-ink: #221c12;
+  --color-ink-dim: #6b6353;
+  --color-ink-faint: #988e78;
+  --color-line: #ddd3bd;
+  --color-line-strong: #c2b596;
+
+  /* Voice */
+  --color-accent: #bc4b28;
+  --color-accent-deep: #96381b;
+  --color-amber: #d98a24;
+  --color-amber-bright: #efac4e;
+
+  /* Semantics */
+  --color-good: #45714b;
+  --color-warn: #b0770f;
+  --color-bad: #a72e1e;
+
+  /* Performance rooms (dark scenes) */
+  --color-room: #171310;
+  --color-room-2: #221c16;
+  --color-room-3: #2e261d;
+  --color-room-line: rgba(244, 226, 187, 0.14);
+  --color-room-ink: #f0e8d8;
+  --color-room-dim: #a3977f;
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Archivo", "Avenir Next", "Segoe UI", sans-serif;
+  --font-mono: "Spline Sans Mono", "Cascadia Code", ui-monospace, monospace;
 }
 
 @layer base {
   body {
-    @apply bg-bg text-ink font-body;
-    background-image:
-      radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.16), transparent 40%),
-      radial-gradient(circle at 85% 0%, rgba(59, 130, 246, 0.14), transparent 45%);
-    background-attachment: fixed;
+    @apply bg-paper text-ink font-body antialiased;
+    background-image: radial-gradient(ellipse 90% 45% at 50% -12%, rgba(188, 75, 40, 0.055), transparent);
     min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(188, 75, 40, 0.22);
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  input,
+  button {
+    font-family: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 }
 
 @layer components {
+  /* Card — warm paper tile with a crisp edge, not a "glass" blur */
   .glass {
-    @apply bg-surface/60 border border-border rounded-2xl backdrop-blur-xl;
+    @apply rounded-xl border border-line bg-cream;
+    box-shadow:
+      0 1px 2px rgba(34, 28, 18, 0.05),
+      0 12px 32px -20px rgba(34, 28, 18, 0.28);
   }
-  .gradient-text {
-    background-image: linear-gradient(135deg, var(--color-purple-light), var(--color-blue-light));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+
+  .kicker {
+    @apply font-mono text-[11px] font-medium uppercase;
+    letter-spacing: 0.14em;
   }
+
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition hover:-translate-y-0.5;
-    background-image: linear-gradient(135deg, var(--color-purple), var(--color-blue));
-    box-shadow: 0 6px 24px rgba(99, 80, 240, 0.4);
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-[15px] font-semibold text-cream transition-all duration-150;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 1px 2px rgba(34, 28, 18, 0.2);
   }
+  .btn-primary:hover {
+    background: var(--color-accent-deep);
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+  }
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+  }
+
   .btn-ghost {
-    @apply inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold bg-surface border border-border transition hover:-translate-y-0.5;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line-strong bg-transparent px-5 py-2.5 text-[15px] font-semibold text-ink transition-all duration-150;
+  }
+  .btn-ghost:hover {
+    background: rgba(34, 28, 18, 0.05);
+    border-color: var(--color-ink-faint);
+  }
+  .btn-ghost:active {
+    transform: translateY(1px);
+  }
+  .btn-ghost:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  /* Dark-room chip button (inside scenes) */
+  .btn-room {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all duration-150;
+    border-color: var(--color-room-line);
+    background: rgba(244, 226, 187, 0.06);
+    color: var(--color-room-ink);
+  }
+  .btn-room:hover {
+    background: rgba(244, 226, 187, 0.12);
+  }
+
+  /* Film grain for the performance rooms */
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0.11;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .grain > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* XP bar — brass fill, sheen sweep, notch cap */
+  .xp-track {
+    @apply relative h-3 w-full overflow-hidden rounded-full;
+    background: rgba(34, 28, 18, 0.1);
+    box-shadow: inset 0 1px 2px rgba(34, 28, 18, 0.18);
+  }
+  .xp-fill {
+    @apply relative h-full rounded-full;
+    background: linear-gradient(180deg, var(--color-amber-bright), var(--color-amber) 55%, #b96f12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 0 8px rgba(217, 138, 36, 0.45);
+    transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+  }
+  .xp-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.45) 48%, transparent 60%);
+    background-size: 220% 100%;
+    animation: xp-sheen 2.8s ease-in-out infinite;
+  }
+
+  /* Typing indicator */
+  .typing-dot {
+    @apply inline-block h-1.5 w-1.5 rounded-full;
+    background: var(--color-ink-faint);
+    animation: typing-bounce 1.2s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  /* Voice equalizer bars (speaking indicator in scenes) */
+  .eq-bar {
+    @apply inline-block w-[3px] rounded-full;
+    background: currentColor;
+    animation: eq-dance 0.9s ease-in-out infinite;
+  }
+  .eq-bar:nth-child(2) {
+    animation-delay: 0.18s;
+  }
+  .eq-bar:nth-child(3) {
+    animation-delay: 0.36s;
+  }
+  .eq-bar:nth-child(4) {
+    animation-delay: 0.1s;
+  }
+
+  /* Slim, styled scrollbar for transcripts */
+  .transcript-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+}
+
+@keyframes xp-sheen {
+  0%,
+  55% {
+    background-position: 160% 0;
+  }
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes eq-dance {
+  0%,
+  100% {
+    height: 5px;
+  }
+  50% {
+    height: 15px;
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -78,57 +78,76 @@ export function Report() {
   }
 
   if (error) {
-    return <main className="mx-auto max-w-2xl px-6 py-16 text-center text-bad">{error}</main>
+    return <main className="mx-auto max-w-2xl px-6 py-16 text-center font-medium text-bad">{error}</main>
   }
 
   if (!evaluation) {
-    return <main className="mx-auto max-w-2xl px-6 py-16 text-center text-ink-dim">Scoring your session…</main>
+    return (
+      <main className="mx-auto max-w-2xl px-6 py-24 text-center">
+        <p className="font-display text-2xl italic text-ink-dim">Scoring your session…</p>
+        <p className="kicker mt-3 text-ink-faint">The judges are conferring</p>
+      </main>
+    )
   }
 
   const categoryEntries = Object.entries(evaluation.categoryScores) as [string, number][]
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
-      <div className="grid gap-6 md:grid-cols-[320px_1fr]">
-        <GlassCard className="text-center">
+      <header className="mb-8 border-b border-line pb-5">
+        <p className="kicker mb-1 text-accent">Session report</p>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">
+          {state.scenario.icon} {state.scenario.title}
+        </h1>
+      </header>
+
+      <div className="grid gap-5 md:grid-cols-[300px_1fr]">
+        <GlassCard className="self-start p-6 text-center">
           <ScoreRing score={evaluation.overallScore} />
-          <div className="mt-4 flex justify-center gap-3">
-            <span className="rounded-full bg-blue/15 px-3 py-1.5 text-sm font-bold text-blue-light">✦ +{xpEarned} XP</span>
-            <span className="rounded-full bg-warn/15 px-3 py-1.5 text-sm font-bold text-warn">🪙 +{coinsEarned}</span>
+          <div className="mt-5 flex justify-center gap-2.5">
+            <span className="kicker rounded-md border border-amber/40 bg-amber/10 px-2.5 py-1.5 text-warn">
+              +{xpEarned} XP
+            </span>
+            <span className="kicker rounded-md border border-line-strong bg-paper px-2.5 py-1.5 text-ink-dim">
+              +{coinsEarned} coins
+            </span>
           </div>
           {newAchievements.length > 0 && (
-            <p className="mt-4 text-xs font-bold text-purple-light">🏆 New achievement unlocked!</p>
+            <p className="kicker mt-4 text-accent">🏆 New achievement unlocked</p>
           )}
         </GlassCard>
 
-        <GlassCard>
-          <div className="space-y-3">
+        <GlassCard className="p-6">
+          <p className="kicker mb-4 text-ink-faint">Category scores</p>
+          <div className="space-y-2.5">
             {categoryEntries.map(([key, score]) => (
-              <div key={key} className="grid grid-cols-[120px_1fr_36px] items-center gap-3 text-sm">
-                <span className="capitalize text-ink-dim">{key}</span>
+              <div key={key} className="grid grid-cols-[130px_1fr_36px] items-center gap-3 text-sm">
+                <span className="capitalize text-ink-dim">{key.replace(/([A-Z])/g, ' $1').toLowerCase()}</span>
                 <ProgressBar percent={score} />
-                <span className="text-right font-bold">{score}</span>
+                <span className="text-right font-mono text-xs font-medium">{score}</span>
               </div>
             ))}
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border-l-4 border-good bg-white/5 p-4">
-              <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-dim">Strengths</h4>
-              <ul className="space-y-1 text-sm">
+          <div className="mt-7 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-lg border-l-[3px] border-good bg-paper/70 p-4">
+              <p className="kicker mb-2.5 text-good">Strengths</p>
+              <ul className="space-y-1.5 text-sm leading-relaxed">
                 {evaluation.strengths.map((s, i) => <li key={i}>✓ {s}</li>)}
               </ul>
             </div>
-            <div className="rounded-xl border-l-4 border-warn bg-white/5 p-4">
-              <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-dim">Watch Out For</h4>
-              <ul className="space-y-1 text-sm">
-                {evaluation.weaknesses.map((w, i) => <li key={i}>⚠ {w}</li>)}
+            <div className="rounded-lg border-l-[3px] border-warn bg-paper/70 p-4">
+              <p className="kicker mb-2.5 text-warn">Watch out for</p>
+              <ul className="space-y-1.5 text-sm leading-relaxed">
+                {evaluation.weaknesses.map((w, i) => <li key={i}>· {w}</li>)}
               </ul>
             </div>
           </div>
 
-          <p className="mt-6 text-sm text-ink-dim">{evaluation.summary}</p>
-          <button className="btn-primary mt-6" onClick={() => navigate('/dashboard')}>View Dashboard</button>
+          <p className="mt-7 border-t border-line pt-5 font-display text-[17px] italic leading-relaxed text-ink-dim">
+            “{evaluation.summary}”
+          </p>
+          <button className="btn-primary mt-6" onClick={() => navigate('/dashboard')}>View dashboard</button>
         </GlassCard>
       </div>
     </main>
