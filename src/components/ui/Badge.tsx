@@ -10,7 +10,7 @@ const TIER_DOT: Record<'easy' | 'mid' | 'hard', string> = {
   hard: 'bg-bad',
 }
 
-export function tierForDifficulty(difficulty: number): 'easy' | 'mid' | 'hard' {
+function tierForDifficulty(difficulty: number): 'easy' | 'mid' | 'hard' {
   if (difficulty <= 3) return 'easy'
   if (difficulty <= 7) return 'mid'
   return 'hard'
